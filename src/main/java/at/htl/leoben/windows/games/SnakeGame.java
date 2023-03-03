@@ -104,9 +104,8 @@ public class SnakeGame extends GameWindowBase<String> {
         //#####################################################################################################
 
 
+        this.spawnApple();
     }
-
-
 
     public void isGameOver(ArrayList<WindowElementItem> snakeBody)
     {
@@ -120,6 +119,19 @@ public class SnakeGame extends GameWindowBase<String> {
                 return;
             }
         }
+
+        if (gameOver) {
+            snakeBodyPlayer0.forEach(e -> e.setText(null));
+            snakeBodyPlayer1.forEach(e -> e.setText(null));
+
+            this.snakeBodyPlayer0.clear();
+            this.snakeBodyPlayer1.clear();
+
+            gameOverScreen.setText(gameOverText);
+            direction0 = SpecialCharacterKey.NONE;
+            direction1 = SpecialCharacterKey.NONE;
+        }
+
 
         // STUDENT TODO: Implement logic to check if a snake hit another snake or border. To do this you mus
         // implement the function Boolean inSnake(ArrayList<WindowElementItem> snakeBody)
@@ -208,6 +220,7 @@ public class SnakeGame extends GameWindowBase<String> {
         }
 
         // Student TODO: Call a method to detect if the snake just ate an apple
+        this.hitApple(oldLastX, oldLastY, snakeBody);
 
     }
 
@@ -227,13 +240,30 @@ public class SnakeGame extends GameWindowBase<String> {
         }
 
         // Student TODO: Write a method to add a new body element to the snake and print it to the gamescreen
+        if (hittedApple != -1) {
+            WindowElementItem next = root.setElement(oldLastX+1, oldLastY+1, 'x', null);
+            snakeBody.add(next);
+            apples.get(hittedApple).setText(null);
+            apples.remove(hittedApple);
+        }
 
     }
 
 
     public void spawnApple()
     {
+        //this.apples.forEach(e -> e.setText(null));
+        //this.apples.clear();
         // STUDENT TODO: Write a method to randomly spawn apples. Use the applescount member variable for this task
+
+        if (apples.size() < appleCount) {
+            for (int i = 0; i < appleCount - apples.size(); i++) {
+                WindowElementItem apple = root.setElement(ThreadLocalRandom.current().nextInt(0, root.getWidth()),
+                        ThreadLocalRandom.current().nextInt(0, root.getHeight()), 'a', null);
+                apples.add(apple);
+            }
+        }
+
     }
 
 }
